@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    
+    <head>
+    
+        <title>Responsive Image</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    </head>
+
+    <body>
+        
+        <h2>Show Different Images Depending on Browser Width</h2>
+        <p>Resize the browser width and the image will change at 600px and 1500px.</p>
+
+        <picture>
+            
+            <source srcset="pexel-boris-krstic-5683082.jpg" media="(max-width: 600px">
+            
+            <source srcset="pexels-alex-chistol-3835461.jpg" media="(max-width: 1500px)">
+              
+            <source srcset="pexels-lisa-fotios-1083822.jpg">
+
+            <img srcset="pexels-lisa-fotios-1083822.jpg" alt="Flowers" style="width:auto;">
+
+        </picture>
+    </body>
+</html>

@@ -1,0 +1,87 @@
+var sitename = window.document.location.hostname;
+var screen_res= screen.width+"X"+screen.height;
+try{
+var sitename_ref = window.parent.location.ancestorOrigins[0];
+}catch(err) {} 
+finally {
+  sitename_ref = sitename;
+}
+if(typeof sitename_ref === "undefined" || sitename_ref === null || sitename_ref ===  ""){
+	sitename_ref = sitename;
+}
+function trackunique_user()
+{
+	var uniq;
+	try{
+		if(localStorage.getItem('jd_vinewsrnot'))
+		{
+			uniq = 0;
+		}
+		else
+		{
+			uniq = 1;
+			localStorage.setItem('jd_vinewsrnot','1');
+		}
+	}catch(err) {
+		uniq = 0;
+	} 
+	return uniq;
+}
+function initial_track(a , adunits_param, isRefresh)
+{
+	//~ var stats ={}; 
+	//~ var adunits = pbjs.adUnits;
+	//~ var treq = pbjs._bidsRequested;
+	//~ var tres = pbjs.getBidResponses();
+	//~ stats['sitename'] ={"site":sitename};
+	//~ stats['adunits'] =adunits;
+	//~ stats['screen_res'] ={"screen_res":screen_res};
+	//~ stats['uniqueviewer'] ={"uniq":trackunique_user()};
+	//~ var filepath = site_url+"tracking/demo_track.php";
+	//~ var param = "reqs="+JSON.stringify(treq)+"&resq="+encodeURIComponent(JSON.stringify(tres))+"&win="+JSON.stringify(a)+"&stats="+JSON.stringify(stats);
+	//~ //console.log(adunits);
+	//~ console.log(param);
+	//~ ajax_call(filepath,param);
+	var stats ={}; 
+	var adunits = adunits_param;
+	//~ var treq = pbjs._bidsRequested;
+	var treq = adunits;
+	var tres = pbjs.getBidResponses();
+	stats['sitename'] ={"site":sitename_ref};
+stats['sitename_original'] ={"site_original":sitename};	stats['adunits'] =adunits;
+	stats['screen_res'] ={"screen_res":screen_res};
+	stats['uniqueviewer'] ={"uniq":trackunique_user()};
+	stats['isRefresh'] ={"isRefresh":isRefresh};
+	var filepath = site_url+"tracking/demo_track.php";
+	var param = "reqs="+JSON.stringify(treq)+"&resq="+encodeURIComponent(JSON.stringify(tres))+"&win="+JSON.stringify(a)+"&stats="+JSON.stringify(stats);
+	
+	ajax_call(filepath,param);
+}
+function video_track(a)
+{
+	console.log("video track");
+	var stats ={}; 
+	stats['sitename'] ={"site":sitename};
+	stats['uniqueviewer'] ={"uniq":trackunique_user()};
+	var filepath = site_url+"tracking/demo_track_video.php";
+	var param = "&win="+JSON.stringify(a)+"&stats="+JSON.stringify(stats);
+	//console.log(adunits);
+	ajax_call(filepath,param);
+}
+function ajax_call(path,param)
+{
+	//console.log("AJAX-CALL")
+	var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+         
+			//console.log(this.responseText);
+        }
+    };   
+	xhttp.open("POST",path,true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+	xhttp.send(param);	
+}
+
+

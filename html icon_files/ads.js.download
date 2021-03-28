@@ -1,0 +1,57 @@
+loadTag(document.currentScript.getAttribute('slotId'));
+function loadTag(id) {
+
+    var pixfuture_main = "pf-" + id;
+    var pixfuture_frame = id + "_mainframe";
+    var pixfuture_ad_width = id.split('x')[1];
+    var pixfuture_ad_height = id.split('x')[2];
+
+    try {
+        var refererUrl = document.referrer;
+    } catch (e) {
+
+    }
+
+    //    if(refererUrl !== ""){
+    //         var xmlHttp = new XMLHttpRequest();
+    //        xmlHttp.open("GET", refererUrl, false); // false for synchronous request
+    //        xmlHttp.send(null);
+    //        console.log(xmlHttp.responseText);
+    //    }
+
+    var title = "";
+    try {
+        title = document.getElementsByTagName("title")[0].innerHTML;
+    } catch (e) {
+
+    }
+
+    var commonWords_array = ["and", "or", "for", "the", "but", "etc", "in", "from", "the", "this", "that", "these", "those", "a", "with", "all", "how", "to", "at", "by", "&amp;", "yes", "no", "do", "I", "i", "an", "of", "more", "less", "safeframe", "container"];
+    title = title.toLowerCase().trim();
+    var keywords_array = title.split(' ');
+    var i;
+    var keywords = [];
+    for (i = 0; i < keywords_array.length; i++) {
+        if (!commonWords_array.includes(keywords_array[i])) {
+            keyword = keywords_array[i].replace(/[^\w\s]/gi, '');
+            if (keyword != "") {
+                keywords.push(keyword);
+            }
+        }
+    }
+    var keywordsStr = keywords.toString();
+
+    if (window.innerWidth < 767 && (pixfuture_ad_width == 970 && pixfuture_ad_height == 250)) {
+        document.getElementById(pixfuture_main).style.maxWidth = "300px";
+        document.getElementById(pixfuture_main).style.maxHeight = "250px";
+        document.getElementById(pixfuture_main).style.display = "contents";
+        document.getElementById(pixfuture_main).innerHTML = '<iframe id="' + pixfuture_frame + '" scrolling="no" frameborder="0" marginwidth="0" marginheight="0" width="300" height="250"></iframe>';
+    } else {
+        document.getElementById(pixfuture_main).style.maxWidth = pixfuture_ad_width + "px";
+        document.getElementById(pixfuture_main).style.maxHeight = pixfuture_ad_height + "px";
+        document.getElementById(pixfuture_main).innerHTML = '<iframe id="' + pixfuture_frame + '" scrolling="no" frameborder="0" marginwidth="0" marginheight="0" width="' + pixfuture_ad_width + '" height="' + pixfuture_ad_height + '"></iframe>';
+    }
+
+    document.getElementById(pixfuture_frame).contentWindow.document.write('<html><head></head><body><div id="' + id + '" clickTrack="%%CLICK_URL_ESC%%"><\/div><script async type="text/javascript"  src="//served-by.pixfuture.com/www/delivery/headerbid_refresh_alex.php?dat=' + id + '&keywords=' + keywordsStr + '&refUrl=' + refererUrl + '&innerWidth=' + window.innerWidth + '&mainDiv='+ pixfuture_main +'&flag=true"><\/script><\/body><\/html>');
+    document.getElementById(pixfuture_frame).contentWindow.document.close();
+}

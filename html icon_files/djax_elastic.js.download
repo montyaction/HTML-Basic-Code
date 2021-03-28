@@ -1,0 +1,745 @@
+var ext = [];
+var win = {};
+
+if (typeof int == "undefined")
+	var int = [];
+
+var reqid_f = {};
+var reqid = {};
+var intreqs = {};
+var intreqstime = {};
+var frad = [];
+var outstream_win = {};
+var instream_win = {};
+var track_data = true;
+if(typeof flag_used == "undefined") {
+	var flag_used = false;
+}
+
+var title = document.createElement('title');
+title.innerHTML = "PixFuture";
+
+document.head.insertBefore(title, document.head.firstChild);
+function log_revive_message(msg) { var debug = location.search.split('pbjs_debug=')[1] ? true : false; if (debug) { if (typeof msg == "string") console.log('REVIVE  : ' + msg); else console.log(msg) } }
+if (typeof jQuery === "undefined") { var imported = document.createElement('script'); imported.setAttribute("type", "text/javascript"); imported.src = "https://cdn.pixfuture.com/jquery3_5_1.min.js"; document.head.appendChild(imported); }
+
+var manageSize = (function () {
+
+
+	function adsTypeStyle(id) {
+
+		switch (id.split("-")[0]) {
+			case "pf":
+				var resizedFrame = id.split("pf-")[1] + "_mainframe";
+				window.parent.parent.document.getElementById(resizedFrame).style.width = screen_w + "px";
+				break;
+			case "PixFuture":
+				var resizedFrame = id.split("PixFuture-")[1] + "x_ADSLOT1";
+				window.parent.parent.document.getElementById(resizedFrame).style.width = screen_w + "px";
+				break;
+			default:
+				window.parent.parent.document.getElementById(iframe).style.width = screen_w + "px";
+		}
+	}
+
+	function adjustCutSizes(id) {
+
+		var iframe = id + "_mainframe";
+		var screen_w = screen.width;
+		var screen_h = screen.height;
+		var head_div = window.parent.parent.document.getElementById(id);
+
+		if (screen_w < 728) {
+
+			if(head_div.classList.contains("pixfuture_responsive_banners")) {
+				head_div.classList.remove('pixfuture_responsive_banners');
+			}
+			if(head_div.classList.contains("pixfuture-sticky-responsive")) {
+				head_div.classList.remove('pixfuture-sticky-responsive');
+			}
+			var inner_width = window.parent.parent.innerWidth;
+			var inner_height = window.parent.parent.innerHeight;
+			if (inner_height > inner_width) {
+				head_div.style.maxWidth = screen_w + "px";
+				switch (id.split("-")[0]) {
+					case "pf":
+						var resizedFrame = id.split("pf-")[1] + "_mainframe";
+						window.parent.parent.document.getElementById(resizedFrame).style.width = screen_w + "px";
+						break;
+					case "PixFuture":
+						var resizedFrame = id.split("PixFuture-")[1] + "x_ADSLOT1";
+						window.parent.parent.document.getElementById(resizedFrame).style.width = screen_w + "px";
+						break;
+					default:
+						window.parent.parent.document.getElementById(iframe).style.width = screen_w + "px";
+				}
+
+			} else {
+				if (screen_h < 728) {
+					head_div.style.maxWidth = screen_w + "px";
+					switch (id.split("-")[0]) {
+						case "pf":
+							var resizedFrame = id.split("pf-")[1] + "_mainframe";
+							window.parent.parent.document.getElementById(resizedFrame).style.width = screen_w + "px";
+							break;
+						case "PixFuture":
+							var resizedFrame = id.split("PixFuture-")[1] + "x_ADSLOT1";
+							window.parent.parent.document.getElementById(resizedFrame).style.width = screen_w + "px";
+							break;
+						default:
+							window.parent.parent.document.getElementById(iframe).style.width = screen_w + "px";
+					}
+
+				}
+			}
+		}
+	}
+
+	function makeResponsive(pixfuture_ad_width, pixfuture_ad_height, id) {
+
+		if ((pixfuture_ad_width == 728) && (pixfuture_ad_height == 90)) {
+
+
+			// check for sticky specific css
+			if (id.split("-")[0] == "PixFuture") {
+				window.parent.parent.document.getElementById(id).classList.add('pixfuture-sticky-responsive','pixfuture_responsive_banners');
+				window.parent.parent.document.getElementById(id+"-background").style.background = "transparent !important";
+			} else {
+				window.parent.parent.document.getElementById(id).style.width = "728px";
+					// add class attribute to manage multiple ads banners
+				window.parent.parent.document.getElementById(id).setAttribute('class', 'pixfuture_responsive_banners');
+			}
+		
+			// creating the style element
+			let style = document.createElement('style');
+
+			// assigning the type
+			style.rel = 'text/css';
+
+			// insert the css rules into style element
+			style.innerHTML = `
+        
+			@media all and (min-width:671px) and (max-width:728px){.pixfuture_responsive_banners{transform:scale(0.9);-webkit-transform:scale(.9);--moz-transform:scale(0.9);-o-transform:scale(.9);-ms-transform:scale(.9);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-10px!important}}
+			@media all and (min-width:651px) and (max-width:670px){.pixfuture_responsive_banners{transform:scale(0.88);-webkit-transform:scale(.88);--moz-transform:scale(0.88);-o-transform:scale(.88);-ms-transform:scale(.88);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-12px!important}}
+			@media all and (min-width:631px) and (max-width:650px){.pixfuture_responsive_banners{transform:scale(0.85);-webkit-transform:scale(.85);--moz-transform:scale(0.85);-o-transform:scale(.85);-ms-transform:scale(.85);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-14px!important}}
+			@media all and (min-width:601px) and (max-width:630px){.pixfuture_responsive_banners{transform:scale(0.8);-webkit-transform:scale(.8);--moz-transform:scale(0.8);-o-transform:scale(.8);-ms-transform:scale(.8);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-18px!important}}
+			@media all and (min-width:560px) and (max-width:600px){.pixfuture_responsive_banners{transform:scale(0.75);-webkit-transform:scale(.75);--moz-transform:scale(0.75);-o-transform:scale(.75);-ms-transform:scale(.75);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-24px!important}}
+			@media all and (min-width:520px) and (max-width:559px){.pixfuture_responsive_banners{transform:scale(0.7);-webkit-transform:scale(.7);--moz-transform:scale(0.7);-o-transform:scale(.7);-ms-transform:scale(.7);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-30px!important}}
+			@media all and (min-width:491px) and (max-width:519px){.pixfuture_responsive_banners{transform:scale(0.65);-webkit-transform:scale(.65);--moz-transform:scale(0.65);-o-transform:scale(.65);-ms-transform:scale(.65);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-32px!important}}
+			@media all and (min-width:451px) and (max-width:490px){.pixfuture_responsive_banners{transform:scale(0.6);-webkit-transform:scale(.6);--moz-transform:scale(0.6);-o-transform:scale(.6);-ms-transform:scale(.6);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-40px!important}}
+			@media all and (min-width:401px) and (max-width:450px){.pixfuture_responsive_banners{transform:scale(0.55);-webkit-transform:scale(.55);--moz-transform:scale(0.55);-o-transform:scale(.55);-ms-transform:scale(.55);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-42px!important}}
+			@media all and (min-width:371px) and (max-width:400px){.pixfuture_responsive_banners{transform:scale(0.5);-webkit-transform:scale(.5);--moz-transform:scale(0.5);-o-transform:scale(.5);-ms-transform:scale(.5);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-45px!important}}
+			@media all and (min-width:341px) and (max-width:370px){.pixfuture_responsive_banners{transform:scale(0.46);-webkit-transform:scale(.46);--moz-transform:scale(0.46);-o-transform:scale(.46);-ms-transform:scale(.46);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-50px!important}}
+			@media all and (min-width:301px) and (max-width:340px){.pixfuture_responsive_banners{transform:scale(0.4);-webkit-transform:scale(.4);--moz-transform:scale(0.4);-o-transform:scale(.4);-ms-transform:scale(.4);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-54px!important}}
+			@media all and (min-width:250px) and (max-width:300px){.pixfuture_responsive_banners{transform:scale(0.35);-webkit-transform:scale(.35);--moz-transform:scale(0.35);-o-transform:scale(.35);-ms-transform:scale(.35);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-60px!important}}
+			@media all and (min-width:150px) and (max-width:250px){.pixfuture_responsive_banners{transform:scale(0.22);-webkit-transform:scale(.22);--moz-transform:scale(0.22);-o-transform:scale(.22);-ms-transform:scale(.22);transform-origin:0 0}.pixfuture-sticky-responsive{bottom:-70px!important}}
+          `;
+
+			// add the style tag to the head of html
+			window.parent.parent.document.head.appendChild(style);
+
+			// DO NOT FORGET! 
+			// CHECK IF THE STYLESHIT ALREADY EXISTS
+	
+		}
+	}
+	return {
+		adjustSizes: adjustCutSizes,
+		responsive: makeResponsive
+	}
+})();
+
+var dome = function (adunits_param, isRefresh) {
+	c = pbjs.getBidResponses();
+
+	setCookie("pixCapTest", "test");
+	log_revive_message("Internal Add values");
+	log_revive_message(int);
+
+	Object.keys(sz).map(function (key) {
+		reqid[0] = Math.round(Date.now() + Math.random());
+		/*adunits_param[0]["requestid"] = ;*/
+		if (adunits_param[0].code == sz[key]) {
+			adunits_param[0].requestid = reqid[0];
+		}
+
+		try {
+			if (int[0][sz[key]]) {
+				if (c[sz[key]] !== undefined && Object.keys(c[sz[key]]).length !== 0) {
+
+					var external_high = pbjs.getHighestCpmBids(sz[key]);
+
+					if (external_high.length != 0 && parseFloat(external_high[0]["cpm"]) >= parseFloat(int[0][sz[key]]["floor_price"])) {
+
+						(parseFloat(external_high[0]["cpm"]) > parseFloat(int[0][sz[key]]['cpm'])) ? adload(1, sz[key], key) : adload(2, sz[key], key);
+
+					}
+					else if (parseFloat(int[0][sz[key]]['cpm']) >= parseFloat(int[0][sz[key]]["floor_price"]) && parseFloat(int[0][sz[key]]["is_house"]) != 1) {
+						adload(2, sz[key], key);
+					}
+					else if (parseFloat(external_high[0]["cpm"]) >= parseFloat(int[0][sz[key]]["floor_price"])) {
+
+						adload(1, sz[key], key)
+						//(parseFloat(external_high[0]["cpm"]) >= parseFloat(int[0][sz[key]]["floor_price"])) ? adload(1,sz[key],key) : adload(3,sz[key],key);
+					}
+					else if (int[0][sz[key]]["is_house"] == 1) {
+
+						adload(2, sz[key], key);
+
+					}
+					else {
+
+						adload(4, sz[key], key)
+					}
+				}
+				else if ((parseFloat(int[0][sz[key]]['cpm']) >= parseFloat(int[0][sz[key]]["floor_price"])) || int[0][sz[key]]["is_house"] == 1) {
+					adload(2, sz[key], key);
+				}
+				else {
+					adload(4, sz[key], key);
+				}
+
+			} else {
+				adload(4, sz[key], key);
+			}
+		}
+		catch (err) {
+			console.log(err);
+			adload(4, sz[key], key);
+		}
+
+	});
+
+	var cachePix = Math.floor(Math.random() * (1000 - 1 + 1) + 1);
+
+	loadScript("https:" + file_url + "tracking/demo_track.js?v" + cachePix + "", function () {
+		initial_track(win, adunits_param, isRefresh);
+	});
+
+}
+
+var adload = function (z, key, id) {
+
+	switch (z) {
+		case 1: //internal ad
+			ext_det = pbjs.getHighestCpmBids(key);
+			ext_ad(key, id, ext_det);
+			break;
+		case 2: // external ad
+			int_ad(key, bz[id]);
+			break;
+		case 3: // house ad
+			demo_ad(key, bz[id], 1);
+			break;
+		case 4: // passback ad
+			passback_ad(key, bz[id]);
+			break;
+		default: //passback tag
+			passback_ad(key, bz[id]);
+			break;
+	}
+}
+
+var initcall = function (z) {
+	//console.log("ajax call-initial");
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function () {
+		if (this.readyState == 4 && this.status == 200) {
+			var ed = new Date();
+			var nss = ed.getTime();
+			intreqs[1] = nss;
+
+			var wh = ed - st;
+			var iad = JSON.parse(this.responseText);
+			iad.requestdate = ns;
+			iad.responsedate = nss;
+			iad.iadtimetorespond = wh;
+			int.push(iad)
+			revieRequestBids();
+		}
+	};
+	xhttp.timeout = tout;
+	xhttp.ontimeout = function () {
+		//console.log("Int-Ad Timeout")
+	}
+	xhttp.open("GET", org_site_url + "/delivery/djax_clientside_headerbidding_dup.php?dat=" + z);
+	var st = new Date();
+	var ns = st.getTime();
+	//console.log("dfdaf");
+	//console.log(ns);
+	intreqs[0] = ns;
+	intreqs[2] = st;
+	xhttp.send()
+}
+
+
+var passback_ad = function (key, id) {
+	var click_track_text = "";
+	try {
+		var curl = parent.document.getElementById(key).getAttribute('clickTrack');
+		if(curl != "%%CLICK_URL_ESC%%"){
+			click_track_text = "<script type=\"text/javascript\">document.body.addEventListener('click', function (event) {  var node = document.createElement(\"img\");node.src = \""+curl+"\";document.body.appendChild(node);}, true);</script>";
+		}
+	} catch (error) {
+		
+	}
+	if (flag_used) {
+		manageSize.responsive(parent_ad_width, parent_ad_height, mainDiv);
+	}
+	//~ console.log(key);
+	track_data = false;
+	trackHouseAd(key);
+	var ifrm = iframetag(key);
+
+	ifrm = ifrm.contentWindow || ifrm.contentDocument.document || ifrm.contentDocument;
+	ifrm.document.open();
+	ifrm.document.write("<!DOCTYPE html><html><head></head><body>" + int[0][key]['passback'] + click_track_text + "</body></html>");
+	ifrm.document.close();
+
+}
+//for external ad
+
+var ext_ad = function (key, id, res) {
+	if (flag_used) {
+		manageSize.responsive(parent_ad_width, parent_ad_height, mainDiv);
+	}
+	//for instream video
+	if (res[0].vastUrl) {
+		//ajax call for create temp xml file
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function () {
+			if (this.readyState == 4 && this.status == 200) {
+
+				ead = this.responseText;
+				//console.log("Ajax response dor getting ad");
+				//console.log(ead);
+				//console.log("external video");
+				invokeVideoPlayer(ead, key, res[0]);
+			}
+
+		};
+		xhttp.timeout = tout;
+		xhttp.ontimeout = function () {
+			//console.log("Int-Ad Timeout");
+		}
+
+		xhttp.open("GET", org_site_url + "/admin/vast_api/videoads.php?url=" + encodeURIComponent(res[0].vastUrl) + "&params=" + JSON.stringify(int[0][key]['bid_details'][res[0]['bidderCode']]) + "&type=external&videotype=" + int[0][key]['width'] + "&key=" + key);
+
+		xhttp.send();
+		//ajax call end
+
+	} else {
+
+
+		//console.log(res[0]);
+		if (res[0].mediaType == 'native') {
+			console.log("native type");
+			var templateJS = '<script type="text/javascript">var ad_title = $(".ad-title-link");var title_text = $(".title-text");$(".ad-image").hover(function(){$(this).next().find(title_text).find(ad_title).toggleClass("hovered");$(this).next().find(".desc-text").find(ad_title).toggleClass("hovered");});$(title_text).hover(function(){$(this).find(ad_title).toggleClass("hovered");$(this).parent().parent().find(".desc-text").find(ad_title).toggleClass("hovered");});$(".desc-text").hover(function(){$(this).find(ad_title).toggleClass("hovered");$(this).parent().parent().find(title_text).find(ad_title).toggleClass("hovered");});var custom_clicktrack = "{native_clicktrackurl()}";var clk = \'<img src="\'+custom_clicktrack+\'" ></img>\';$(".custom-clk").click(function(){var clk_div = $(this).closest(".ads").find("#clk-track");clk_div.html(clk);clk_div.html("");});</script>';
+			var template = '<style>.ad-image:hover{ cursor:pointer;} .title-text:hover, .desc-text:hover{ text-decoration:underline; color:#0785f2 !important;} .pixf-link:hover, { text-decoration:none; color:#8E8C8C;} .hovered{ text-decoration:underline !important; color:#0785f2 !important;} .call-button:hover{ background:#aaa !important; color:white !important;}</style>';
+
+			if (int[0][key]['width'] == 300 && int[0][key]['height'] == 250) {
+				template += '<div class="ads" style="width:300px;height:250px;position:relative;border:1px solid #eeee;box-sizing:border-box;background-color:white;"><div class="ad-container" style="width:100%;height:100%;"><a class="ad-image custom-clk" href="native_clickurl" target="_blank"><div class="ad-image-div" style="width:100%;height:148px; background-image:url(\'{native_image()}\');background-size:cover;"></div></a><div class="ad-title" style="width:100%; height:32px;"><div class="title-wrap" style="width:100%;padding:5px 0;cursor:default;"><span class="title-text" style="font-size:14px;font-weight:700;color:black;padding-left:10px;cursor:pointer;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_title()}</a></span></div><div class="desc-wrap" style="padding:10px;max-width:100%;cursor:default;"><span class="desc-text" style="font-size:11px;color:black;cursor:pointer;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_body()}</a></span></div></div></div><div class="sponsored-link" style="position:absolute;right:5px;bottom:5px;"><a class="pixf-link" style="font-size:9px;font-family:open sans, sans-serif; color:#8E8C8C; text-decoration:none;box-shadow:none;" href="native_clickurl" target="_blank">Powered by {native_sponsoredBy()}</a></div><div id="clk-track" style="display:none;height:0;"></div></div>';
+			} else if (int[0][key]['width'] == 160 && int[0][key]['height'] == 600) {
+				template += '<div class="ads" style="width:160px;height:600px;position:relative;border:1px solid #eeee;box-sizing:border-box;background-color:white;"><div class="ad-container" style="width:100%;height:100%;"><a class="ad-image custom-clk" href="native_clickurl" target="_blank"><div class="ad-image-div" style="width:100%;height:118px; background-image:url(\'{native_image()}\');background-size:cover;"></div></a><div class="ad-title" style="width:100%; height:520px;"><div class="title-wrap" style="width:100%;padding:5px 0;cursor:default;height:120px;display:flex;align-items:center;justify-content:center;"><span class="title-text" style="font-size:18px;font-weight:700;color:black;cursor:pointer;padding:10px;text-align:center;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_title()}</a></span></div><div class="desc-wrap" style="width:100%;cursor:default;height:340px;text-align:center;display:flex;align-items:center;justify-content:center;"><span class="desc-text" style="font-size:14px;color:black;cursor:pointer;padding:10px;position:relative;bottom:50px;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_body()}</a></span></div></div></div><div class="sponsored-link" style="position:absolute;right:5px;bottom:5px;"><a class="pixf-link" style="font-size:9px;font-family:open sans, sans-serif; color:#8E8C8C; text-decoration:none;box-shadow:none;" href="native_clickurl" target="_blank">Powered by {native_sponsoredBy()}</a></div><div id="clk-track" style="display:none;height:0;"></div></div>';
+			} else if (int[0][key]['width'] == 728 && int[0][key]['height'] == 90) {
+				template += '<div class="ads" style="width:728px;height:90px;display:inline-block;position:relative;border:1px solid #eeee;box-sizing:border-box;background-color:white;"><div class="ad-container" style="width:100%;height:100%;"><a class="ad-image custom-clk" href="native_clickurl" target="_blank"><div class="ad-image-div" style="width:180px;height:88px; background-image:url(\'{native_image()}\');background-size:cover; display:inline-block;vertical-align:top;"></div></a><div class="ad-title" style="width:548px; height:38px;display:inline-block;position:absolute;right:0;"><div class="title-wrap" style="width:100%;padding:5px 0;cursor:default;"><span class="title-text" style="font-size:14px;font-weight:700;color:black;padding-left:10px;cursor:pointer;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_title()}</a></span></div><div class="desc-wrap" style="padding:10px;max-width:100%;cursor:default;"><span class="desc-text" style="font-size:11px;color:black;cursor:pointer;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_body()}</a></span></div></div></div><div class="sponsored-link" style="position:absolute;right:5px;bottom:5px;"><a class="pixf-link" style="font-size:9px;font-family:open sans, sans-serif; color:#8E8C8C; text-decoration:none;box-shadow:none;" href="native_clickurl" target="_blank">Powered by {native_sponsoredBy()}</a></div><div id="clk-track" style="display:none;height:0;"></div></div>';
+			} else if (int[0][key]['width'] == 320 && int[0][key]['height'] == 50) {
+				template += '<div class="ads" style="width:320px;height:50px;border:solid 1px white;position:relative;border:1px solid #eeee;box-sizing:border-box;background-color:white;"><a class="ad-image custom-clk" href="native_clickurl" target="_blank"><div class="ad-image-div" style="width:100px;height:48px; background-image:url(\'{native_image()}\');background-size:cover; display:inline-block;vertical-align:top;"></div></a><div class="ad-title" style="width:67%; height:38px; display:inline-block;"><a class="ad-title-link custom-clk" href="native_clickurl" style="text-decoration:none;font-family:open sans, sans-serif;"><span class="title-text" style="font-size:11px;color:black;"><b>{native_title()}</b></span><br /><span class="desc-text" style="font-size:9px;color:black;">{native_body()}</span></a></div><div class="sponsored-link" style="position:absolute;right:5px;bottom:1px;"><a class="pixf-link" style="font-size:8px;font-family:open sans, sans-serif; color:#8E8C8C; text-decoration:none;box-shadow:none;" href="native_clickurl" target="_blank">Powered by {native_sponsoredBy()}</a></div><div id="clk-track" style="display:none;height:0;"></div></div>';
+			} else if (int[0][key]['width'] == 970 && int[0][key]['height'] == 250) {
+				template += '<div class="ads" style="width:970px;height:250px;display:inline-block;position:relative;border:1px solid #eeee;box-sizing:border-box;background-color:white;"><div class="ad-container" style="width:100%;height:100%;"><a class="ad-image custom-clk" href="native_clickurl" target="_blank"><div class="ad-image-div" style="width:500px;height:248px; background-image:url(\'{native_image()}\');background-size:cover; display:inline-block;vertical-align:top;"></div></a><div class="ad-title" style="width:468px; height:123px;display:inline-block;position:absolute;right:0;"><div class="title-wrap" style="width:100%;padding:5px 0;cursor:default;"><span class="title-text" style="font-size:25px;font-weight:700;color:black;padding-left:10px;cursor:pointer;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_title()}</a></span></div><div class="desc-wrap" style="padding:10px;max-width:100%;cursor:default;"><span class="desc-text" style="font-size:18px;color:black;cursor:pointer;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_body()}</a></span></div></div></div><div class="sponsored-link" style="position:absolute;right:5px;bottom:5px;"><a class="pixf-link" style="font-size:9px;font-family:open sans, sans-serif; color:#8E8C8C; text-decoration:none;box-shadow:none;" href="native_clickurl" target="_blank">Powered by {native_sponsoredBy()}</a></div><div id="clk-track" style="display:none;height:0;"></div></div>';
+			} else if (int[0][key]['width'] == 300 && int[0][key]['height'] == 600) {
+				template += '<div class="ads" style="width:300px;height:600px;position:relative;border:1px solid #eeee;box-sizing:border-box;background-color:white;"><div class="ad-container" style="width:100%;height:100%;"><a class="ad-image custom-clk" href="native_clickurl" target="_blank"><div class="ad-image-div" style="width:100%;height:225px; background-image:url(\'{native_image()}\');background-size:cover;"></div></a><div class="ad-title" style="width:100%; height:385px;"><div class="title-wrap" style="width:100%;padding:5px 0;cursor:default;height:120px;display:flex;align-items:center;justify-content:center;"><span class="title-text" style="font-size:18px;font-weight:700;color:black;cursor:pointer;padding:10px;text-align:center;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_title()}</a></span></div><div class="desc-wrap" style="width:100%;cursor:default;height:265px;text-align:center;display:flex;align-items:center;justify-content:center;"><span class="desc-text" style="font-size:14px;color:black;cursor:pointer;padding:10px;position:relative;bottom:50px;"><a class="ad-title-link custom-clk" href="native_clickurl" target="_blank" style="text-decoration:none;font-family:open sans, sans-serif;color:black;">{native_body()}</a></span></div></div></div><div class="sponsored-link" style="position:absolute;right:5px;bottom:5px;"><a class="pixf-link" style="font-size:9px;font-family:open sans, sans-serif; color:#8E8C8C; text-decoration:none;box-shadow:none;" href="native_clickurl" target="_blank">Powered by {native_sponsoredBy()}</a></div><div id="clk-track" style="display:none;height:0;"></div></div>';
+			}
+
+
+			csspath = 'html body';
+			template += '<img src="{native_impressionurl()}" width=0 height=0>';
+			template += templateJS;
+
+			var title = template.replace('{native_title()}', res[0]['native']['title']);
+
+			title = title.replace('{native_image()}', res[0]['native']['image']['url']);
+
+			title = title.replace('{native_body()}', res[0]['native']['body']);
+
+			title = title.replace(/native_clickurl/g, res[0]['native']['clickUrl']);
+
+			title = title.replace('{native_cta()}', res[0]['native']['cta']);
+
+			title = title.replace('{native_sponsoredBy()}', res[0]['native']['sponsoredBy']);
+
+			title = title.replace('{native_icon()}', res[0]['native']['icon']);
+
+			title = title.replace('{native_impressionurl()}', res[0]['native']['impressionTrackers'][0]);
+
+			title = title.replace('{native_clicktrackurl()}', res[0]['native']['clickTrackers'][0]);
+
+			$(csspath).css("margin", 0);
+			$(csspath).html(title);
+
+
+		} else {
+			var iframe = iframetag(key);
+			var iframeDoc = iframe.contentWindow.document;
+			iframeDoc.close();
+			pbjs.renderAd(iframeDoc, res[0].adId);
+			iframeDoc.close();
+
+		}
+		//console.log("out1");
+		//for outstream video
+		if (res[0].renderer) {
+			//console.log("outstream");
+			out_arr[res[0].adUnitCode] = res[0];
+			//console.log("OUTSTREAM-AD");
+			setTimeout(function () {
+				invokeTracking();
+			}, 500);
+		} else {
+
+			var asp = key.split("x");
+			var cpm = res[0]['cpm'] / 1000;
+			//console.log("publisher share");
+			//console.log(int[0][key]['third_share']);
+			//console.log(cpm);
+			if (int[0][key]['third_share'] == null || int[0][key]['third_share'] == "") {
+				int[0][key]['third_share'] = 0;
+			}
+			var pub_share = (cpm * int[0][key]['third_share']) / 100;
+			var admin_share = cpm - pub_share;
+
+			var wr = pbjs.getBidResponsesForAdUnitCode(key);
+			var add_request_id = wr.bids[0].adserverTargeting.hb_adid + "_" + wr.bids[0].adserverTargeting.hb_bidder + "_" + wr.bids[0].adserverTargeting.hb_size;
+			win[key] = { "zoneid": asp[0], "accountid": asp[3], "sitename": window.document.location.hostname, "winbid": 1, "bidder": res[0]['bidder'], "cpm": cpm, "responsetime": res[0]['timeToRespond'], "requestdate": res[0]['requestTimestamp'], "responsedate": res[0]['responseTimestamp'], "slotid": key, "mediatype": res[0]['mediaType'], "admin_share": admin_share, "publisher_share": pub_share, "requestid": reqid[0], "add_response_id": add_request_id };
+
+			//console.log("win");
+			//console.log(win);
+		}
+	}
+}
+
+//for internal ad
+var int_ad = function (k, i) {
+	if (flag_used) {
+		manageSize.adjustSizes(mainDiv);
+	}
+
+	var camp = int[0][k].campaignId;
+	var banner = int[0][k].bannerId;
+	var cookieBanner = getCookie("pixCap" + camp + "_" + banner + "");
+	if (cookieBanner != "" && camp != null && banner != null) {
+		setCookie("pixCap" + camp + "_" + banner + "", parseInt(cookieBanner) + 1);
+	} else {
+		setCookie("pixCap" + camp + "_" + banner + "", 1);
+	}
+
+	if (int[0][k] && int[0][k]['type'] == 'intbanner') {
+
+		if (int[0][k]["url"] != 0) {
+			var iframe = iframetag(k);
+			var iframeDoc = iframe.contentWindow.document;
+			//document.getElementById(k).innerHTML =  int[0][k]['url'];
+			iframeDoc.write("<html><head></head><body marginwidth=\"0\" marginheight=\"0\">" + int[0][k]['url'] + "</body></html>");
+			iframeDoc.close();
+			var track_script = document.createElement("script");
+			track_script.setAttribute("type", "text/javascript");
+			track_script.text = "var iframe = document.getElementById('" + iframe.id + "').contentWindow;iframe.addEventListener('mousedown', function(event) { var curl = document.getElementById('" + k + "').getAttribute('clickTrack'); if(curl!='' && curl!='{clickurl}')var xp = new XMLHttpRequest(); xp.open('GET', curl, true); xp.send();  });document.getElementById('" + iframe.id + "').setAttribute('marginwidth','0');document.getElementById('" + iframe.id + "').setAttribute('marginheight','0');";
+			document.getElementById(k).appendChild(track_script);
+			var asp = k.split("x");
+			cpm = Number(int[0][k]['cpm']) / 1000;
+			pub_share = (cpm * int[0][k]['third_share']) / 100;
+			admin_share = cpm - pub_share;
+
+			if (int[0][k]["is_house"] != 1) {
+				win[k] = {
+					"zoneid": asp[0],
+					"accountid": asp[3],
+					"sitename": window.document.location.hostname,
+					"requestid": reqid[0],
+					"winbid": 2,
+					"bidder": "internal",
+					"cpm": cpm,
+					"responsetime": int[0]['iadtimetorespond'],
+					"requestdate": int[0]['requestdate'],
+					"responsedate": int[0]["responsedate"],
+					"slotid": k, "mediatype": "banner", "admin_share": admin_share, "publisher_share": pub_share
+				};
+			} else {
+				trackHouseAd(k);
+			}
+			//console.log("internal-win");
+			//console.log(win);
+		}
+		else if (Object.keys(pbjs.getHighestCpmBids(k)).length > 0) {
+			ext_det = pbjs.getHighestCpmBids(k);
+			var ext_cpm = ext_det[0]['cpm'];
+			(ext_cpm > 0) ? ext_ad(k, i, ext_det) : demo_ad(k, i, 1);
+
+		}
+		else {
+			demo_ad(k, i, 1);
+		}
+	} else {
+		demo_ad(k, i, 1);
+	}
+}
+
+//for demo ad
+var demo_ad = function (k, t, m) {
+	if (flag_used) {
+		manageSize.adjustSizes(mainDiv);
+	}
+	if (t == 'banner') {
+		/*var adsiz = k.split("x");
+		var psf = file_url + 'images/' + adsiz[1] + 'x' + adsiz[2] + '.gif'
+		var img = document.createElement('img');
+		img.src = psf;
+		document.getElementById(k).appendChild(img);*/
+		//if(m == 1)
+		//{
+		//passback_ad(k,t);
+		if (int[0][k]["url"] != 0) {
+			var iframe = iframetag(k);
+			var iframeDoc = iframe.contentWindow.document;
+			//document.getElementById(k).innerHTML =  int[0][k]['url'];
+			iframeDoc.write("<html><head></head><body marginwidth=\"0\" marginheight=\"0\">" + int[0][k]['url'] + "</body></html>");
+			iframeDoc.close();
+			var track_script = document.createElement("script");
+			track_script.setAttribute("type", "text/javascript");
+			track_script.text = "var iframe = document.getElementById('" + iframe.id + "').contentWindow;iframe.addEventListener('mousedown', function(event) { var curl = document.getElementById('" + k + "').getAttribute('clickTrack'); if(curl!='' && curl!='{clickurl}')var xp = new XMLHttpRequest(); xp.open('GET', curl, true); xp.send();  });document.getElementById('" + iframe.id + "').setAttribute('marginwidth','0');document.getElementById('" + iframe.id + "').setAttribute('marginheight','0');";
+			document.getElementById(k).appendChild(track_script);
+		} else {
+			passback_ad(k, t);
+		}
+		var asp = k.split("x");
+		var ed = new Date();
+		var nss = ed.getTime();
+
+		win[k] = {
+			"zoneid": asp[0],
+			"accountid": asp[3],
+			"sitename": window.document.location.hostname,
+			"requestid": reqid[0],
+			"winbid": 0,
+			"bidder": "demo-ad",
+			"cpm": 0,
+			"responsetime": 0,
+			"requestdate": nss,
+			"responsedate": nss,
+			"slotid": k,
+			"mediatype": "banner"
+		};
+		//}
+	} else {
+		invokeVideoPlayer("", k);
+	}
+}
+
+var iframetag = function (a) {
+	var id = r_id();
+	var tag_det = a.split("x");
+	var ifrm = document.createElement("iframe");
+	ifrm.setAttribute("id", id);
+	ifrm.setAttribute("FRAMEBORDER", 0);
+	ifrm.setAttribute("SCROLLING", "no");
+	ifrm.setAttribute("class", a);
+	ifrm.setAttribute("width", tag_det[1]);
+	ifrm.setAttribute("height", tag_det[2]);
+	ifrm.setAttribute("marginwidth", "0");
+	ifrm.setAttribute("marginheight", "0");
+	document.getElementById(a).appendChild(ifrm);
+	var iframe = document.getElementById(id);
+	return iframe;
+}
+
+var trackHouseAd = function (k) {
+	var asp = k.split("x");
+	var ed = new Date();
+	var nss = ed.getTime();
+
+	win[k] = {
+		"zoneid": asp[0],
+		"accountid": asp[3],
+		"sitename": window.document.location.hostname,
+		"requestid": reqid[0],
+		"winbid": 0,
+		"bidder": "demo-ad",
+		"cpm": 0,
+		"responsetime": 0,
+		"requestdate": nss,
+		"responsedate": nss,
+		"slotid": k,
+		"mediatype": "banner"
+	};
+}
+
+
+
+var r_id = function () {
+	return 'id-' + Math.random().toString(36).substr(2, 16)
+}
+
+//for instream video
+var invokeVideoPlayer = function (url, k, b) {
+
+	//console.log("entered");
+	//console.log(url);
+	jwplayer.key = "XbCmwICYTU4sZT3u37Ti4UR+d5ZnEH7boZW3TA==";
+	jwplayer(k).setup({
+		file: "http://vjs.zencdn.net/v/oceans.mp4",
+		width: "600",
+		height: "350",
+		autostart: "true",
+		primary: "flash",
+		skin: { active: "#0390a5", inactive: "#ffffff", name: "jw-skin-six", background: "#303440" },
+		mute: "false",
+		repeat: "false",
+		stretching: "none",
+		title: "Ads",
+		description: "Inlin Ads demo",
+		advertising: {
+			client: "vast",
+			schedule: {
+				preroll: { offset: "pre", tag: url },
+			}
+		}
+	});
+	if (!url) {
+		var asp = k.split("x");
+		win[k] = {
+			"zoneid": asp[0],
+			"accountid": asp[3],
+			"sitename": window.document.location.hostname,
+			"requestid": reqid[0],
+			"winbid": 3,
+			"bidder": "demo-ad",
+			"cpm": 0,
+			"responsetime": 0,
+			"requestdate": 0,
+			"responsedate": 0,
+			"slotid": k,
+			"mediatype": "video"
+		};
+		//console.log("win demo");
+		//console.log(win);
+	}
+	jwplayer(k).on('adImpression', function () {
+
+		var val = k.split("x");
+		var win, cp, admin_share, pub_share;
+		//console.log("internal-vied-inste");
+		//console.log(b['bidder']);
+		if (b['bidder'] == undefined) {
+			win = 2
+			var cpm = Number(b['cpm']) / 1000;
+			var pub_share = cpm * int[0][k]['int_share'] / 1000;
+			var admin_share = cpm - pub_share;
+			instream_win[k] = {
+				"zoneid": val[0],
+				"accountid": val[3],
+				"sitename": window.document.location.hostname,
+				"requestid": reqid[0],
+				"winbid": win,
+				"bidder": 'internal',
+				"cpm": cpm,
+				"responsetime": int[0]['iadtimetorespond'],
+				"requestdate": int[0]['requestdate'],
+				"responsedate": b['responsedate'],
+				"slotid": k,
+				"mediatype": "video",
+				"admin_share": admin_share,
+				"publisher_share": pub_share
+			};
+			//console.log(instream_win);
+		}
+		else {
+			//console.log("jw player impression");
+			win = 1
+			cpm = Number(b['cpm']) / 1000;
+			pub_share = cpm * int[0][k]['third_share'] / 1000;
+			admin_share = cpm - pub_share;
+
+			instream_win[k] = {
+				"zoneid": val[0],
+				"accountid": val[3],
+				"sitename": window.document.location.hostname, "requestid": b['auctionId'],
+				"winbid": win,
+				"bidder": b['bidder'],
+				"cpm": cpm,
+				"responsetime": b['timeToRespond'],
+				"requestdate": b['requestTimestamp'], "responsedate": b['responseTimestamp'],
+				"slotid": k,
+				"mediatype": "video",
+				"admin_share": admin_share,
+				"publisher_share": pub_share
+			};
+		}
+
+		//console.log("ins -video");
+		//console.log(instream_win);
+		video_track(instream_win);
+	});
+}
+
+//for outstream ad
+var invokeTracking = function () {
+
+	Object.keys(out_arr).map(function (objectKey, index) {
+		//console.log(objectKey);
+		var video_objectKey = document.getElementById(objectKey).querySelectorAll("[id^='" + objectKey + "']")[0].children[0].contentWindow.document.getElementsByTagName("VIDEO")[0];
+		//console.log(video_objectKey);
+		var count_objectKey = 0;
+		video_objectKey.addEventListener('playing', handler);
+		video_objectKey.myParam = out_arr[objectKey];
+		//console.log(out_arr[objectKey]);
+	});
+
+}
+function handler(e) {
+	//console.log("video playing");
+	e.target.removeEventListener(e.type, arguments.callee);
+	var vb = e.target.myParam;
+	//console.log(vb);
+	var slot = vb.adUnitCode;
+	var val = slot.split("x")
+
+
+	var cpm = Number(vb['cpm']) / 1000;
+	var pub_share = cpm * int[0][key]['third_share'] / 100;
+	var admin_share = cpm - pub_share;
+
+	outstream_win[slot] = { "zoneid": val[0], "accountid": val[3], "sitename": window.document.location.hostname, "requestid": vb['auctionId'], "winbid": 1, "bidder": vb['bidder'], "cpm": cpm, "responsetime": vb['timeToRespond'], "requestdate": vb['requestTimestamp'], "responsedate": vb['responseTimestamp'], "slotid": slot, "mediatype": "video", "admin_share": admin_share, "publisher_share": pub_share };
+	//console.log("outsttream-video");
+	//console.log(outstream_win);
+	video_track(outstream_win);
+}
+
+function setCookie(cname, cvalue) {
+	//var d = new Date();
+	var d = new Date();
+	//d.setHours(d.getHours()+1);
+	d.setHours(23);
+	d.setMinutes(59);
+	d.setMilliseconds(0);
+	//d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	var expires = "expires=" + d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";domain=.pixfuture.com;path=/";
+}
+
+function getCookie(cname) {
+	var name = cname + "=";
+	//var decodedCookie = decodeURIComponent(document.cookie);
+	var decodedCookie = document.cookie;
+	//var ca = decodedCookie.split(';');
+	var ca = decodedCookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
