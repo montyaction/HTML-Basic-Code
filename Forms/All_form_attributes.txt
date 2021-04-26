@@ -1,0 +1,14 @@
+
+List of All <form> Attributes
+
+Attribute	    Description
+
+accept-charset	Specifies the character encodings used for form submission
+action	        Specifies where to send the form-data when a form is submitted
+autocomplete	Specifies whether a form should have autocomplete on or off
+enctype	        Specifies how the form-data should be encoded when submitting it to the server (only for method="post")
+method	        Specifies the HTTP method to use when sending form-data
+name	        Specifies the name of the form
+novalidate	    Specifies that the form should not be validated when submitted
+rel	            Specifies the relationship between a linked resource and the current document
+target	        Specifies where to display the response that is received after submitting the form
