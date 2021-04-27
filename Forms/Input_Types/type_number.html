@@ -1,0 +1,34 @@
+<!--
+Input Type Number
+The <input type="number"> defines a numeric input field.
+
+You can also set restrictions on what numbers are accepted.
+
+The following example displays a numeric input field, where you can enter a value from 1 to 5:
+
+Example -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Form - Input Type</title>
+</head>
+<body>
+    
+    <h2>Number Field</h2>
+
+    <p>The <strong>input type="number"</strong> defines a numeric input field.</p>
+
+    <p>You can use the min and max attributes to add numeric restrictions in the input field:</p>
+
+    <form action="/action_page.php">
+        <label for="quantity">Quantity (between 1 and 5):</label>
+        <input type="number" id="quantity" name="quantity" min="1" max="5">
+        <input type="submit" value="Submit">
+    
+    </form>
+</body>
+</html>
